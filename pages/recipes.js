@@ -1,7 +1,15 @@
 import { Client } from "@notionhq/client";
+import Link from "next/link";
 
 const RecipePage = ({ recipes }) => {
-  return recipes.map((recipe) => <p>{recipe}</p>);
+  // return <pre>{JSON.stringify(recipes, null, 2)}</pre>;
+  return recipes.map((recipe) => (
+    <p key={recipe.id}>
+      <Link href={`/recipes/${recipe.id}`}>
+        <a>{recipe.title}</a>
+      </Link>
+    </p>
+  ));
 };
 
 export const getStaticProps = async () => {
@@ -17,7 +25,10 @@ export const getStaticProps = async () => {
 
   data.results.forEach((result) => {
     if (result.type === "child_page") {
-      recipes.push(result.child_page.title);
+      recipes.push({
+        id: result.id,
+        title: result.child_page.title,
+      });
     }
   });
 
